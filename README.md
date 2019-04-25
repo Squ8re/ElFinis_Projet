@@ -1,2 +1,2 @@
 # ElFinis_Projet
-Ce répertoire reprends le projet d'élément finis de Nicolas BoOUCHAT et Amadéo DAVID
+Ce répertoire reprends le projet d'élément finis de Nicolas BOUCHAT et Amadéo DAVID
