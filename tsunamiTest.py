@@ -11,12 +11,13 @@
 
 import numpy as np
 import tsunami as tsunami
+import tsunamiAnimate as tsuAnim
 
 #
 # -1- Lecture des données
 #
 
-theMeshFile = "PacificTriangleFine.txt"
+theMeshFile = "PacificTriangleTiny.txt"
 [nNode,X,Y,H,nElem,elem] = tsunami.readMesh(theMeshFile)
 print(" == Number of elements : %d " % nElem)
 print(" == Number of nodes    : %d " % nNode)
@@ -53,3 +54,5 @@ dt = 0.1; nIter = 100; nSave = 25
 
 for iElem in [27,28] :
   print(" == Elevations for element %d : %14.7e %14.7e %14.7e " % (iElem,*E[iElem][:]) )
+
+#tsuAnim.draw()
