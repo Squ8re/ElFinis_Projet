@@ -55,4 +55,4 @@ dt = 0.1; nIter = 100; nSave = 25
 for iElem in [27,28] :
   print(" == Elevations for element %d : %14.7e %14.7e %14.7e " % (iElem,*E[iElem][:]) )
 
-#tsuAnim.draw()
+tsuAnim.draw()

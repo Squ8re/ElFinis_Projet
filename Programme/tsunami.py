@@ -84,6 +84,19 @@ def IntegGL(X1, X2, f):
     
     return (X2-X1)/2 * (f(x1)+f(x2))
 
+def hammerIntegrate(x,y,f) :
+    A = np.array([[0.666666666666667,0.166666666666667,0.166666666666667],
+                  [0.166666666666667,0.166666666666667,0.666666666666667],
+                  [0.166666666666667,0.666666666666667,0.166666666666667]])
+    
+    xInt = np.dot(A,x)
+    yInt = np.dot(A,y)
+    
+    Jacobien = abs((x[1]-x[0])*(y[2]-y[0]) - (x[2]-x[0])*(y[1]-y[0]))
+    I = (Jacobien/6) * ( f(xInt[0], yInt[0]) + f(xInt[1], yInt[1]) + f(xInt[2], yInt[2]) )
+        
+    return I
+
 def compute(theMeshFile,theResultFiles,U,V,E,dt,nIter,nSave):
 
 #
