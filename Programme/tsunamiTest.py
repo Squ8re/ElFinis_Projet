@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # -------------------------------------------------------------------------
 #
 # PYTHON for FEM DUMMIES 18-19
@@ -11,13 +12,14 @@
 
 import numpy as np
 import tsunami as tsunami
-import tsunamiAnimate as tsuAnim
-
+#import tsunamiAnimate as TA
 #
 # -1- Lecture des données
 #
+print('coucou depuis tsunamiTest.py')
 
 theMeshFile = "PacificTriangleTiny.txt"
+print('entre dans readMesh')
 [nNode,X,Y,H,nElem,elem] = tsunami.readMesh(theMeshFile)
 print(" == Number of elements : %d " % nElem)
 print(" == Number of nodes    : %d " % nNode)
@@ -45,14 +47,12 @@ tsunami.writeResult(theResultFiles,0,E)
 # -3- Calcul du tsunami en relisant les conditions initiales 
 #     dans le fichier qu'on vient juste d'écrire :-)
 #
-
 U = np.zeros([nElem,3])
 V = np.zeros([nElem,3])
+print('entre dans readResult')
 E = tsunami.readResult(theResultFiles,0,nElem)
 dt = 0.1; nIter = 100; nSave = 25
-[U,V,E] = tsunami.compute(theMeshFile,theResultFiles,U,V,E,dt,nIter,nSave)
+[U,V,E] = tsunami.compute(theMeshFile ,theResultFiles,U,V,E ,dt,nIter,nSave)
 
 for iElem in [27,28] :
   print(" == Elevations for element %d : %14.7e %14.7e %14.7e " % (iElem,*E[iElem][:]) )
-
-tsuAnim.draw()
