@@ -117,8 +117,8 @@ def mapEdge(theMeshFile, elem): #vient du prof
         elementRight = myEdge[3]
         nodesLeft    = elem[elementLeft]
         nodesRight   = elem[elementRight]
-        mapEdgeLeft[iEdge,:]  = [3*elementLeft  + np.nonzero(nodesLeft  == myEdge[j])[0][0] for j in range(2)]
-        mapEdgeRight[iEdge,:] = [3*elementRight + np.nonzero(nodesRight == myEdge[j])[0][0] for j in range(2)]
+        mapEdgeLeft[iEdge,:]  = [np.nonzero(nodesLeft  == myEdge[j])[0][0] for j in range(2)]
+        mapEdgeRight[iEdge,:] = [np.nonzero(nodesRight == myEdge[j])[0][0] for j in range(2)]
     return[mapEdgeLeft, mapEdgeRight]
 
 def addIntegralsTriangles(X, Y, H, E, U, V, nElem, elem):
@@ -173,9 +173,7 @@ def addIntegralsTriangles(X, Y, H, E, U, V, nElem, elem):
             for k in range(3):
                 coefIntegr = jac*weight[j]
                 Ei[iElem, k] += coefIntegr* (h*p1*(u * dphidx[k] + v * dphidy[k]) + phi[k]*p2)
-                
                 Ui[iElem, k] += coefIntegr * (phi[k]*(f*v-u*gamma) + dphidx[k]*g*e*p1 + phi[k]*p3)
-                
                 Vi[iElem, k] += coefIntegr * (phi[k]*(-f*v-u*gamma) + dphidy[k]*g*e*p1 + phi[k]*p3)
                 
     return Ei, Ui, Vi
@@ -185,7 +183,10 @@ def addIntegralsEdges(X, Y, H, E, U, V, nEdges, nBoundary, edges, mapEdgeLeft, m
     print('coucou depuis addIntegralsEdges')
     R = 6371220
     g = 9.81
-    
+    #print('E', E) que des 0 [3 x nEdges]
+    print('mapEdgeLeft', mapEdgeLeft)
+    print('nEdges', nEdges)
+    print('nBoundary', nBoundary)
     Xsi = np.array([-0.5773502691896257, 0.5773502691896257])
     
     for iEdge in range(nEdges):
@@ -193,8 +194,8 @@ def addIntegralsEdges(X, Y, H, E, U, V, nEdges, nBoundary, edges, mapEdgeLeft, m
         elemR = edges[iEdge][3]
         nodeLeft =  mapEdgeLeft[iEdge]
         nodeRight =  mapEdgeRight[iEdge]
-        print(nodeLeft)
-        print(nodeRight)
+#        print('nodeLeft', nodeLeft)
+#        print('nodeRight', nodeRight)
         
         nodes = edges[iEdge][0:2] #a modif ?
         x = X[nodes]   
@@ -228,16 +229,19 @@ def addIntegralsEdges(X, Y, H, E, U, V, nEdges, nBoundary, edges, mapEdgeLeft, m
             unEt  = (unL+unR)/2 + np.sqrt(g/h) * (eL-eR)/2 #peut etre switch entre eR et eR
             
             for k in range(2):
-                E[iEdge, k] += jac * (phi[k]*h*unEt*p1)
-                U[iEdge, k] += jac * (phi[k]*nx*g*etaEt*p1)
-                V[iEdge, k] += jac * (phi[k]*ny*g*etaEt*p1)
+                E[elemL, k] -= jac * (phi[k]*h*unEt*p1)
+                E[elemR, k] += jac * (phi[k]*h*unEt*p1)
+                U[elemL, k] -= jac * (phi[k]*nx*g*etaEt*p1)
+                U[elemR, k] += jac * (phi[k]*nx*g*etaEt*p1)
+                V[elemL, k] -= jac * (phi[k]*ny*g*etaEt*p1)
+                V[elemR, k] += jac * (phi[k]*ny*g*etaEt*p1)
                 
     #return Ei, Ui, Vi #pas besoin de return si on modifie juste E U V
 
 
 def compute(theMeshFile,theResultFiles,U,V,E,dt,nIter,nSave):
     print('coucou depuis compute')
-    
+    print(E.shape)
     nNode,X,Y,H,nElem,elem = readMesh(theMeshFile)
     nEdges, nBoundary, edges = ComputeEdges(theMeshFile)
     mapEdgeLeft, mapEdgeRight = mapEdge(theMeshFile, elem)
@@ -245,9 +249,6 @@ def compute(theMeshFile,theResultFiles,U,V,E,dt,nIter,nSave):
     Ei, Ui, Vi = addIntegralsTriangles(X, Y, H, E, U, V, nElem, elem)
     addIntegralsEdges(X, Y, H, Ei, Ui, Vi, nEdges, nBoundary, edges, mapEdgeLeft, mapEdgeRight)
     
-    print('Ei', Ei)
-    print('Ui', Ui)
-    print('Vi', Vi)
     E = E + dt*Ei
     U = U + dt*Ui
     V = V + dt*Vi
