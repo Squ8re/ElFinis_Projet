@@ -10,11 +10,26 @@
 # 
 
 import numpy as np
-print('coucou depuis tsunami.py')
+from timeit import default_timer as timer
+#print('coucou depuis tsunami.py')
+# -------------------------------------------------------------------------
+def tic(message = ''):
+  global startTime
+  startTime = timer()
+
+def toc(message = ''):
+  global startTime
+  stopTime = timer()
+  if message:
+    message = ' (' + message + ')' ;
+  print("Elapsed time is %.6f seconds %s" % ((stopTime - startTime),message) )
+  elapsedTime = stopTime - startTime;
+  startTime = timer()
+  return elapsedTime
 # -------------------------------------------------------------------------
 
 def readMesh(fileName) :
-  print('coucou depuis readMesh')
+#  print('coucou depuis readMesh')
   with open(fileName,"r") as f :
     nNode = int(f.readline().split()[3])
     xyz   = np.array(list(list(float(w) for w in f.readline().split()[2:]) for i in range(nNode)))
@@ -121,18 +136,15 @@ def mapEdge(theMeshFile, elem): #vient du prof
         mapEdgeRight[iEdge,:] = [np.nonzero(nodesRight == myEdge[j])[0][0] for j in range(2)]
     return[mapEdgeLeft, mapEdgeRight]
 
-def addIntegralsTriangles(X, Y, H, E, U, V, nElem, elem):
-    print('coucou depuis addIntegralsTriangles')
+def addIntegralsTriangles(X, Y, H, Ei, Ui, Vi, nElem, elem):
+#    print('coucou depuis addIntegralsTriangles')
     R = 6371220
     gamma = 10**(-7)
     g = 9.81
-    Ei = np.zeros(E.shape)
-    Ui = np.zeros(U.shape)
-    Vi = np.zeros(V.shape)
     
     Xsi    = np.array([0.166666666666667,0.666666666666667,0.166666666666667])
     Eta    = np.array([0.166666666666667,0.166666666666667,0.666666666666667])
-    weight = np.array([0.166666666666667,0.166666666666667,0.166666666666667])
+    weight = 0.166666666666667
     
     dphidxsi = np.array([ 1.0, 0.0,-1.0])
     dphideta = np.array([ 0.0, 1.0,-1.0])
@@ -158,45 +170,68 @@ def addIntegralsTriangles(X, Y, H, E, U, V, nElem, elem):
             xsi = Xsi[j]
             eta = Eta[j]   
             phi = [(1-xsi-eta), xsi, eta]
-            u = U[iElem][0]*(1-xsi-eta)+U[iElem][1]*(xsi)+U[iElem][2]*(eta)
-            v = V[iElem][0]*(1-xsi-eta)+V[iElem][1]*(xsi)+V[iElem][2]*(eta)
-            e = E[iElem][0]*(1-xsi-eta)+E[iElem][1]*(xsi)+E[iElem][2]*(eta)
+            u = Ui[iElem,0]*(1-xsi-eta)+Ui[iElem,1]*(xsi)+Ui[iElem,2]*(eta)
+            v = Vi[iElem,0]*(1-xsi-eta)+Vi[iElem,1]*(xsi)+Vi[iElem,2]*(eta)
+            e = Ei[iElem,0]*(1-xsi-eta)+Ei[iElem,1]*(xsi)+Ei[iElem,2]*(eta)
             h = H[nodes[0]]*(1-xsi-eta)+H[nodes[1]]*(xsi)+H[nodes[2]]*(eta)
             xi = x[0]*(1-xsi-eta)+x[1]*(xsi)+x[2]*(eta)
             yi = y[0]*(1-xsi-eta)+y[1]*(xsi)+y[2]*(eta)
             z3d = R*(4*R*R - xi*xi - yi*yi) / (4*R*R + xi*xi + yi*yi)
-            f = 4*np.pi*z3d/R*86400   
+            f = (4*np.pi*z3d) / (R*86400)   
             p1 = (4*R*R + xi**2 + yi**2) / (4*R*R)
-            p2 = h*(xi*u+yi*v)/R**2
-            p3 = g*xi*e/(2*R**2)
+            p2 = (h*(xi*u+yi*v)) / (R**2)
+            p3 = (g*xi*e) / (2*(R**2))
             
             for k in range(3):
-                coefIntegr = jac*weight[j]
+                coefIntegr = jac*weight
                 Ei[iElem, k] += coefIntegr* (h*p1*(u * dphidx[k] + v * dphidy[k]) + phi[k]*p2)
                 Ui[iElem, k] += coefIntegr * (phi[k]*(f*v-u*gamma) + dphidx[k]*g*e*p1 + phi[k]*p3)
                 Vi[iElem, k] += coefIntegr * (phi[k]*(-f*v-u*gamma) + dphidy[k]*g*e*p1 + phi[k]*p3)
                 
-    return Ei, Ui, Vi
 
 
 def addIntegralsEdges(X, Y, H, E, U, V, nEdges, nBoundary, edges, mapEdgeLeft, mapEdgeRight):
-    print('coucou depuis addIntegralsEdges')
+#    print('coucou depuis addIntegralsEdges')
     R = 6371220
     g = 9.81
-    #print('E', E) que des 0 [3 x nEdges]
-    print('mapEdgeLeft', mapEdgeLeft)
-    print('nEdges', nEdges)
-    print('nBoundary', nBoundary)
     Xsi = np.array([-0.5773502691896257, 0.5773502691896257])
     
-    for iEdge in range(nEdges):
+    for iEdge in range(nBoundary):
+        elemL = edges[iEdge][2]
+        nodes = edges[iEdge][0:2]
+        nodeLeft =  mapEdgeLeft[iEdge]
+        x = X[nodes]   
+        y = Y[nodes] 
+        dx = x[1] - x[0]
+        dy = y[1] - y[0]
+        jac = np.sqrt(dx*dx+dy*dy)
+        nx = dy / jac
+        ny = -dx / jac
+        jac = jac/2
+        
+        for j in range(2):
+            xsi = Xsi[j]
+            phi = [(1-xsi)/2,(1+xsi)/2]
+            eL = E[elemL, nodeLeft[0]]*(1-xsi)/2+E[elemL, nodeLeft[1]]*(1+xsi)/2
+            uL = U[elemL, nodeLeft[0]]*(1-xsi)/2+U[elemL, nodeLeft[1]]*(1+xsi)/2
+            vL = V[elemL, nodeLeft[0]]*(1-xsi)/2+V[elemL, nodeLeft[1]]*(1+xsi)/2
+            xi = x[0]*phi[0]+x[1]*phi[1]
+            yi = y[0]*phi[0]+y[1]*phi[1]
+            h = H[nodes[0]]*phi[0] + H[nodes[1]]*phi[1]
+            p1 = (4*R*R + xi**2 + yi**2) / (4*R*R)
+            unL = nx*uL + ny*vL
+            unR = -unL
+            etaEt = eL + np.sqrt(h/g) * (-unL)
+            
+            for k in range(2):
+                U[elemL, k] -= jac * (phi[k]*nx*g*etaEt*p1)
+                V[elemL, k] -= jac * (phi[k]*ny*g*etaEt*p1)
+        
+    for iEdge in range(nBoundary, nEdges):
         elemL = edges[iEdge][2]
         elemR = edges[iEdge][3]
         nodeLeft =  mapEdgeLeft[iEdge]
         nodeRight =  mapEdgeRight[iEdge]
-#        print('nodeLeft', nodeLeft)
-#        print('nodeRight', nodeRight)
-        
         nodes = edges[iEdge][0:2] #a modif ?
         x = X[nodes]   
         y = Y[nodes]   
@@ -211,12 +246,11 @@ def addIntegralsEdges(X, Y, H, E, U, V, nEdges, nBoundary, edges, mapEdgeLeft, m
         for j in range(2):
             xsi = Xsi[j]
             phi = [(1-xsi)/2,(1+xsi)/2]
-#            print(elemL, nodeLeft[0])
-            eL = E[elemL, nodeLeft[0]]*(1-xsi)/2+E[elemL, nodeLeft[1]]*(1+xsi)/2
+            eL = E[elemL, nodeLeft[0]] *(1-xsi)/2+E[elemL, nodeLeft[1]] *(1+xsi)/2
             eR = E[elemR, nodeRight[0]]*(1-xsi)/2+E[elemR, nodeRight[1]]*(1+xsi)/2
-            uL = U[elemL, nodeLeft[0]]*(1-xsi)/2+U[elemL, nodeLeft[1]]*(1+xsi)/2
+            uL = U[elemL, nodeLeft[0]] *(1-xsi)/2+U[elemL, nodeLeft[1]] *(1+xsi)/2
             uR = U[elemR, nodeRight[0]]*(1-xsi)/2+U[elemR, nodeRight[1]]*(1+xsi)/2
-            vL = V[elemL, nodeLeft[0]]*(1-xsi)/2+V[elemL, nodeLeft[1]]*(1+xsi)/2
+            vL = V[elemL, nodeLeft[0]] *(1-xsi)/2+V[elemL, nodeLeft[1]] *(1+xsi)/2
             vR = V[elemR, nodeRight[0]]*(1-xsi)/2+V[elemR, nodeRight[1]]*(1+xsi)/2
             xi = x[0]*phi[0]+x[1]*phi[1]
             yi = y[0]*phi[0]+y[1]*phi[1]
@@ -226,7 +260,7 @@ def addIntegralsEdges(X, Y, H, E, U, V, nEdges, nBoundary, edges, mapEdgeLeft, m
             unR = uR*nx + vR*ny        
             
             etaEt = (eL+eR)/2 + np.sqrt(h/g) * (unR-unL)/2
-            unEt  = (unL+unR)/2 + np.sqrt(g/h) * (eL-eR)/2 #peut etre switch entre eR et eR
+            unEt  = (unL+unR)/2 + np.sqrt(g/h) * (eR-eL)/2 #peut etre switch entre eL et eR (de base)
             
             for k in range(2):
                 E[elemL, k] -= jac * (phi[k]*h*unEt*p1)
@@ -236,22 +270,44 @@ def addIntegralsEdges(X, Y, H, E, U, V, nEdges, nBoundary, edges, mapEdgeLeft, m
                 V[elemL, k] -= jac * (phi[k]*ny*g*etaEt*p1)
                 V[elemR, k] += jac * (phi[k]*ny*g*etaEt*p1)
                 
-    #return Ei, Ui, Vi #pas besoin de return si on modifie juste E U V
 
+def multiplyInverseMatrix(elem, nElem, Ei, Ui, Vi, X, Y):
+  Ainverse = np.array([[18.0,-6.0,-6.0],[-6.0,18.0,-6.0],[-6.0,-6.0,18.0]])
+  
+  for iElem in range(nElem) :
+    nodes = elem[iElem]
+    x = X[nodes]
+    y = Y[nodes]
+    jac = abs((x[0]-x[1]) * (y[0]-y[2]) - (x[0]-x[2]) * (y[0]-y[1]))
+    Ei[iElem] = Ainverse @ Ei[iElem] / jac
+    Ui[iElem] = Ainverse @ Ui[iElem] / jac
+    Vi[iElem] = Ainverse @ Vi[iElem] / jac
 
 def compute(theMeshFile,theResultFiles,U,V,E,dt,nIter,nSave):
-    print('coucou depuis compute')
-    print(E.shape)
-    nNode,X,Y,H,nElem,elem = readMesh(theMeshFile)
-    nEdges, nBoundary, edges = ComputeEdges(theMeshFile)
-    mapEdgeLeft, mapEdgeRight = mapEdge(theMeshFile, elem)
+    save = 0
     
-    Ei, Ui, Vi = addIntegralsTriangles(X, Y, H, E, U, V, nElem, elem)
-    addIntegralsEdges(X, Y, H, Ei, Ui, Vi, nEdges, nBoundary, edges, mapEdgeLeft, mapEdgeRight)
-    
-    E = E + dt*Ei
-    U = U + dt*Ui
-    V = V + dt*Vi
-    
+    for i in range(nIter):
+        tic()
+        
+        nNode,X,Y,H,nElem,elem = readMesh(theMeshFile)
+        nEdges, nBoundary, edges = ComputeEdges(theMeshFile)
+        mapEdgeLeft, mapEdgeRight = mapEdge(theMeshFile, elem)
+        
+        Ei = np.zeros(E.shape)
+        Ui = np.zeros(U.shape)
+        Vi = np.zeros(V.shape)
+        addIntegralsTriangles(X, Y, H, Ei, Ui, Vi, nElem, elem)
+        addIntegralsEdges(X, Y, H, Ei, Ui, Vi, nEdges, nBoundary, edges, mapEdgeLeft, mapEdgeRight)
+        multiplyInverseMatrix(elem, nElem, Ei, Ui, Vi, X, Y)
+        
+        E += dt*Ei
+        U += dt*Ui
+        V += dt*Vi
+        if save==nSave:  
+            save=0
+            writeResult(theResultFiles ,i,E)
+        
+        save += 1
+        toc()
     
     return [U,V,E]

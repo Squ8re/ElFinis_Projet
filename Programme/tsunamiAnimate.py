@@ -130,7 +130,7 @@ def idle():
   
   iter += delta 
   try :
-    E = tsunami.readResult(theResultFiles,iter,nElem)
+    E = tsunami.readResult(theResultFiles ,iter,nElem)
     glutPostRedisplay()
   except FileNotFoundError: 
     pass
@@ -141,7 +141,8 @@ iter = 0; delta = 25;
 R = 6371220;
 BathMax = 9368;
 theMeshFile = "PacificTriangleFine.txt"
-theResultFiles = "results/eta-%06d.txt"
+theResultFiles = "results/eta-%06d.txt" #===========================
+#theResultFiles = "nosResultats/eta-%06d.txt"
 theFlagBathymetry = False
 theMouse = 389
 theRatio = 1.0
@@ -169,7 +170,6 @@ glEnable(GL_DEPTH_TEST)
 glEnable(GL_COLOR_MATERIAL)
 glEnable(GL_NORMALIZE)	
 
-print('entre dans draw')
 glutDisplayFunc(draw)
 glutKeyboardFunc(keyboard)
 glutSpecialFunc(special)

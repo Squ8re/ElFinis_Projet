@@ -16,10 +16,8 @@ import tsunami as tsunami
 #
 # -1- Lecture des données
 #
-print('coucou depuis tsunamiTest.py')
 
 theMeshFile = "PacificTriangleTiny.txt"
-print('entre dans readMesh')
 [nNode,X,Y,H,nElem,elem] = tsunami.readMesh(theMeshFile)
 print(" == Number of elements : %d " % nElem)
 print(" == Number of nodes    : %d " % nNode)
@@ -40,7 +38,7 @@ for iElem in range(nElem):
   y[iElem][:] = Y[nodes] 
 E = tsunami.initialConditionOkada(x,y)
 
-theResultFiles = "eta-%06d.txt"
+theResultFiles = "nosResultats/eta-%06d.txt"
 tsunami.writeResult(theResultFiles,0,E)
 
 #
@@ -49,7 +47,6 @@ tsunami.writeResult(theResultFiles,0,E)
 #
 U = np.zeros([nElem,3])
 V = np.zeros([nElem,3])
-print('entre dans readResult')
 E = tsunami.readResult(theResultFiles,0,nElem)
 dt = 0.1; nIter = 100; nSave = 25
 [U,V,E] = tsunami.compute(theMeshFile ,theResultFiles,U ,V,E ,dt,nIter,nSave)
