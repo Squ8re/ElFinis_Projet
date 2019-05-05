@@ -326,7 +326,7 @@ def compute(theMeshFile,theResultFiles,U,V,E,dt,nIter,nSave):
     
     for i in range(nIter):
         tic()
-        
+        #TODO: Imposer les conditions initiales.
         nNode,X,Y,H,nElem,elem = readMesh(theMeshFile)
         nEdges, nBoundary, edges = ComputeEdges(theMeshFile)
         mapEdgeLeft, mapEdgeRight = mapEdge(theMeshFile, elem)
