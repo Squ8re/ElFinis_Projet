@@ -1,0 +1,99 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[siunitx]{circuitikz}
+\usepackage{lmodern}
+
+\usepackage{amsmath}
+\usepackage{soul}
+\usepackage{amssymb}
+
+\usepackage{mathrsfs}
+\usepackage{siunitx}
+
+\usepackage{lettrine}
+\usepackage{graphicx}%permet de mettre des images, les réduire, les placer, les tourner [scale=....,angle=...]
+\usepackage{pdfpages}%permet d'inclure des pages de documents pdfs
+\usepackage{booktabs}%permet de faire des jolis tableaux
+\usepackage{multicol}%permet de faire des listes sur 2 colonnes
+\usepackage{multirow}
+\usepackage{geometry}%changer les marges, footers, headers
+\usepackage{float} % permet de choisir mieux ou mettre les images avec[H],t,b,p,
+\usepackage[T1]{fontenc}
+\usepackage{enumitem}
+\usepackage{xcolor}%mettre du txt en couleur \textcolor{colorname}{Text to be colored}
+\usepackage{textcomp,gensymb} %permet le \degree \perthousand \micro
+\usepackage{amsmath}%faire des équas de math alignées et des théorèmes
+\usepackage[french]{babel}%met le document en francais (table de matières
+\usepackage[T1]{fontenc}%pour avoir les accents et les caractères bizarres
+\usepackage{rotating}% permet de tourner l'image avec \begin{sidewaysfigure}
+\usepackage{fancyhdr}%modifier les headers et footers
+\usepackage{hyperref}%permet de cliquer sur les urls et les sections dans les pdfs
+\usepackage{titling}
+\usepackage{wrapfig}
+\usepackage{listingsutf8}  % Insertion de code
+\begin{document}
+% Template issu de: https://www.latextemplates.com/template/academic-title-page
+\begin{titlepage} % Suppresses displaying the page number on the title page and the subsequent page counts as page 1
+	\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for horizontal lines, change thickness here
+	
+	%------------------------------------------------
+	%   Logos
+	%------------------------------------------------
+	\begin{minipage}[t]{0.30\linewidth}
+		\includegraphics[height=1.5cm]{Images/logo_EPL.jpg}
+	\end{minipage} \hfill
+	\begin{minipage}[t]{0.35\linewidth}
+		\includegraphics[height=1.5cm]{Images/logo_UCL.jpg}
+	\end{minipage}
+	
+	\center % Centre everything on the page
+	
+	
+	%------------------------------------------------
+	%	Headings
+	%------------------------------------------------
+	
+	%\textsc{\LARGE Ecole Polytechnique de Louvain}\\[1.5cm] % Main heading such as the name of your university/college
+	
+	\vspace{1.5cm}
+	\textsc{\Large Introduction aux éléments finis}\\[0.5cm] % Major heading such as course name
+	
+	\textsc{\large MECA1120}\\[1.0cm] % Minor heading such as course title
+	
+	%------------------------------------------------
+	%	Title
+	%------------------------------------------------
+	
+	\HRule\\[0.65cm]
+	%\vspace{1.5cm}
+	
+	{\huge\bfseries Projet 18-19 : note de synthèse}\\[0.4cm] % Title of your document
+	
+	\HRule\\[1.5cm]
+	%\vspace{1.5cm}
+	
+	%------------------------------------------------
+	%	Author(s)
+	%------------------------------------------------
+	
+	%{\large\textit{Auteurs}}\\
+	Groupe n\degree$120$\\[0.2cm]
+	Amadéo \textsc{David}  - $4476 1700$% Your name
+	
+	Nicolas \textsc{Bouchat} - $3488 1700$% Your name
+	
+	%------------------------------------------------
+	%	Date
+	%------------------------------------------------
+	
+	\vfill\vfill\vfill % Position the date 3/4 down the remaining page
+	
+	{\large 6 mai 2019} % Date, change the \today to a set date if you want to be precise
+	
+	%----------------------------------------------------------------------------------------
+	
+	\vfill % Push the date up 1/4 of the remaining page
+	
+\end{titlepage}
+
+\end{document}
