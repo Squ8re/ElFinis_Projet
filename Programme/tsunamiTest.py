@@ -38,7 +38,7 @@ for iElem in range(nElem):
   y[iElem][:] = Y[nodes] 
 E = tsunami.initialConditionOkada(x,y)
 
-theResultFiles = "nosResultats/eta-%06d.txt"
+theResultFiles = "nosResult/eta-%06d.txt"
 tsunami.writeResult(theResultFiles,0,E)
 
 #
@@ -48,7 +48,7 @@ tsunami.writeResult(theResultFiles,0,E)
 U = np.zeros([nElem,3])
 V = np.zeros([nElem,3])
 E = tsunami.readResult(theResultFiles,0,nElem)
-dt = 0.1; nIter = 100; nSave = 25
+dt = 2; nIter = 10; nSave = 10
 [U,V,E] = tsunami.compute(theMeshFile ,theResultFiles,U ,V,E ,dt,nIter,nSave)
 
 for iElem in [27,28] :

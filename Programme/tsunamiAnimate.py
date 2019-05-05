@@ -137,12 +137,12 @@ def idle():
 
 # -------------------------------------------------------------------------
   
-iter = 0; delta = 25;
+iter = 0; delta = 1;
 R = 6371220;
 BathMax = 9368;
-theMeshFile = "PacificTriangleFine.txt"
-theResultFiles = "results/eta-%06d.txt" #===========================
-#theResultFiles = "nosResultats/eta-%06d.txt"
+theMeshFile = "PacificTriangleTiny.txt"
+#theResultFiles = "results/eta-%06d.txt" #===========================
+theResultFiles = "nosResult/eta-%06d.txt"
 theFlagBathymetry = False
 theMouse = 389
 theRatio = 1.0
@@ -195,6 +195,7 @@ print(' ESC     : exit ')
 print('======================================')
  
 [nNode,X,Y,H,nElem,elem] = tsunami.readMesh(theMeshFile)
+print(nElem);                                                                   #TODO: Delete this.
 try :
   E = tsunami.readResult(theResultFiles,0,nElem)
 except FileNotFoundError:
