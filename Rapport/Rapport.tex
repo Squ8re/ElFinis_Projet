@@ -99,6 +99,7 @@
 	%TODO
 \section{Ordre de précision du résultat obtenu}
 	%TODO
+	CM8 slide 28 -> erreur $ = h^{p+1}$
 \section{Analyse de la solution}
 	%TODO
 \section{Optimisation du programme}
@@ -113,7 +114,20 @@
 		Voici les différentes étapes de résolution pour lesquels nous avons opté.
 		\begin{enumerate}
 			\item 
-				%TODO
+				Notre algorithme commence par déterminer les fonctions de forme d'un élément ainsi que son jacobien.
+			\item 
+				On applique ensuite une méthode la méthode de Hammer pour l'intégration des triangles et une méthode de Gauss-Legendre pour les arêtes. 
+				On interpole en fait les valeurs des vecteurs modèles afin de passer par les points d'intégration (ces-derniers sont donnés).
+			\item 
+				Commence ensuite le calcul des différents termes à ajouter.
+				Ceux-ci sont donnés à la troisième page de l'énoncé sous forme d'équation.
+			\item
+				Sur les bords, les termes d'intégration vont être ajoutés aux vecteurs $E_i$, $U_i$ et $V_i$.
+			\item 
+				On résout ensuite en multipliant chaque vecteur par son coefficient inverse puis en le divisant pas le jacobien.
+				Cette méthode est appelée un solveur de Riemann.
+			\item 
+				L'algorithme se termine en appliquant Euler explicite.
 		\end{enumerate}
 	\subsection{Optimisation du code}
 		Cette sous-partie est elle-même composée de différents domaines.
