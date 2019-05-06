@@ -11,7 +11,7 @@
 # 
 
 import numpy as np
-import tsunami as tsunami
+import tsunamiCOPIE as tsunami
 #import tsunamiAnimate as TA
 #
 # -1- Lecture des données
@@ -48,7 +48,7 @@ tsunami.writeResult(theResultFiles,0,E)
 U = np.zeros([nElem,3])
 V = np.zeros([nElem,3])
 E = tsunami.readResult(theResultFiles,0,nElem)
-dt = 2; nIter = 10; nSave = 10
+dt = 5; nIter = 700; nSave = 10
 [U,V,E] = tsunami.compute(theMeshFile ,theResultFiles,U ,V,E ,dt,nIter,nSave)
 
 for iElem in [27,28] :
