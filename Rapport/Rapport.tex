@@ -1,3 +1,4 @@
+% !TeX spellcheck = fr_FR
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 \usepackage[siunitx]{circuitikz}
@@ -23,7 +24,7 @@
 \usepackage{xcolor}%mettre du txt en couleur \textcolor{colorname}{Text to be colored}
 \usepackage{textcomp,gensymb} %permet le \degree \perthousand \micro
 \usepackage{amsmath}%faire des équas de math alignées et des théorèmes
-\usepackage[french]{babel}%met le document en francais (table de matières
+\usepackage[french]{babel}%met le document en francais (table de matières)
 \usepackage[T1]{fontenc}%pour avoir les accents et les caractères bizarres
 \usepackage{rotating}% permet de tourner l'image avec \begin{sidewaysfigure}
 \usepackage{fancyhdr}%modifier les headers et footers
@@ -67,7 +68,7 @@
 	\HRule\\[0.65cm]
 	%\vspace{1.5cm}
 	
-	{\huge\bfseries Projet 18-19 : note de synthèse}\\[0.4cm] % Title of your document
+	{\huge\bfseries Projet 18-19 : notes de synthèse}\\[0.4cm] % Title of your document
 	
 	\HRule\\[1.5cm]
 	%\vspace{1.5cm}
@@ -101,16 +102,26 @@
 	%TODO
 	CM8 slide 28 -> erreur $ = h^{p+1}$
 \section{Analyse de la solution}
-	%TODO
+	L'analyse de notre solution est faites de plusieurs observations importantes.
+	La première est que le choix de l'intervalle temporel entre chaque itération est important.
+	
+	D'une part, si celui-ci est top petit le temps de calcul sera immense.
+	Or, comme ce n'est pas les détails qui nous intéresse mais bien le déplacement global de la vague, un grand temps de calcul pour un petit déplacement de l'océan ne s'avère pas utile.
+	De plus, comme la solution comporte déjà des imprécisions (comme l'utilisation d'un facteur proportionnel à la vitesse représentant l'ensemble des effets dissipatifs), les détails seront certainement faussés, l'erreur étant trop grande que pour être ignorée.
+	
+	D'autre part, si le pas de temps est trop grand, la fonction sort de sa zone de stabilité.
+	La solution devient alors inutilisable et ne fait plus sens.
+	Cela s'observe facilement sur l'illustration suivante.
+	%TODO: Ajouter une méthode instable.
 \section{Optimisation du programme}
-	%TODO
+	%TODO: Vérifier les étapes de l'optimisation algorithmique.
 	L'optimisation d'un programme peut être divisée en deux parties. 
 	La première est l'optimisation algorithmique et la seconde est l'optimisation du code. 
 	Nous allons d'abord nous concentrer sur la première avant d'analyser la seconde.
 	\subsection{Optimisation algorithmique}
 		L'optimisation algorithmique a pour but de diminuer au maximum la complexité mathématique du système de résolution utilisé dans le programme.
 		En pratique, cela se traduira par le choix de la méthode mathématique de résolution.
-		Après décomposition du problème en différents sous-problèmes plus simple, il apparait que ces derniers sont proches de la matière vue au cours du quadrimestre, notamment lors des devoirs à rendre.
+		Après décomposition du problème en différents sous-problèmes plus simples, il apparait que ces derniers sont proches de la matière vue au cours du quadrimestre, notamment lors des devoirs à rendre.
 		Voici les différentes étapes de résolution pour lesquels nous avons opté.
 		\begin{enumerate}
 			\item 
