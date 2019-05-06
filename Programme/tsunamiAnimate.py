@@ -150,7 +150,7 @@ theRatio = 1.0
 glutInit(sys.argv)
 glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH)
 glutInitWindowPosition(0, 0)
-glutInitWindowSize(500, 500)
+glutInitWindowSize(1000, 1000)                                # Initialement 500, 500
 glutCreateWindow("MECA1120 : the 2019 project :-)")
 
 matSpecular   = [1.0,1.0,1.0,0.0]
