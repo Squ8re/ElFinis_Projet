@@ -17,12 +17,15 @@ def tic(message = ''):
   global startTime
   startTime = timer()
 
-def toc(message = ''):
+def toc(Es=0,message = ''):
   global startTime
   stopTime = timer()
   if message:
-    message = ' (' + message + ')' ;
+      message = ' (' + message + ')' ;
   print("Elapsed time is %.6f seconds %s" % ((stopTime - startTime),message) )
+  if(Es!=0):
+      for iElem in [27] :
+          print(" == Elevations for element %d : %14.7e %14.7e %14.7e " % (iElem,*E[iElem][:]) )
   elapsedTime = stopTime - startTime;
   startTime = timer()
   return elapsedTime
@@ -302,6 +305,6 @@ def compute(theMeshFile,theResultFiles,U,V,E,dt,nIter,nSave):
         if s % nSave == 0:  
             writeResult(theResultFiles ,s,E)
         
-        toc()
+        toc(Es = E)
     
     return [U,V,E]

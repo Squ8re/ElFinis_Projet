@@ -11,7 +11,7 @@
 # 
 
 import numpy as np
-import tsunamiATESTER as tsunami
+import tsunamiCOPIE as tsunami
 #import tsunamiAnimate as TA
 #
 # -1- Lecture des données
@@ -38,7 +38,7 @@ for iElem in range(nElem):
   y[iElem][:] = Y[nodes] 
 E = tsunami.initialConditionOkada(x,y)
 
-theResultFiles = "nosResultFine/eta-%06d.txt"
+theResultFiles = "nosResultFine2/eta-%06d.txt"
 tsunami.writeResult(theResultFiles,0,E)
 
 #
@@ -48,8 +48,9 @@ tsunami.writeResult(theResultFiles,0,E)
 U = np.zeros([nElem,3])
 V = np.zeros([nElem,3])
 E = tsunami.readResult(theResultFiles,0,nElem)
-dt = 5; nIter = 700; nSave = 5
+dt = 5; nIter = 5000; nSave = 25
 [U,V,E] = tsunami.compute(theMeshFile ,theResultFiles,U ,V,E ,dt,nIter,nSave)
 
 for iElem in [27,28] :
   print(" == Elevations for element %d : %14.7e %14.7e %14.7e " % (iElem,*E[iElem][:]) )
+prin("Programme terminé.")
