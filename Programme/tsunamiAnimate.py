@@ -23,7 +23,7 @@ import sys
 print('coucou depuis tsunamiAnimate.py')
 
 def draw():  
-  global E,theFlagBathymetry,theMouseSide,theMouseVertical,theRatio, EdgeFLAG
+  global E,TransSide,TransVert,theFlagBathymetry,theMouseSide,theMouseVertical,theRatio, EdgeFLAG
 
   glClearColor( 0.9, 0.9, 0.8, 0.0 );
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -35,6 +35,8 @@ def draw():
   glLoadIdentity();
   gluLookAt(0.0,1.0,0.0,0.0,20.0,0.0,0.0,0.0,1.0);  
   glTranslatef(0.0,14.0,0.0);
+  glTranslatef(0.3*TransSide,0.0,0.0);
+  glTranslatef(0.0,0.0,0.3*TransVert);
   glRotatef(0.3*theMouseSide,0.0,0.0,1.0);
   glRotatef(0.3*theMouseVertical, 1.0, 0.0, 0.0);
   
@@ -99,7 +101,7 @@ def reshape(width, height):
 # -------------------------------------------------------------------------
  
 def keyboard(key,x,y):
-  global theFlagBathymetry, iter, PauseFlag, EdgeFLAG
+  global theFlagBathymetry, iter, PauseFlag, EdgeFLAG, TransSide, TransVert
   
   key = key.decode()
   if ord(key) == 27: # Escape
@@ -114,6 +116,14 @@ def keyboard(key,x,y):
     PauseFlag = not PauseFlag
   elif key == 's':
     EdgeFLAG = not EdgeFLAG
+  elif key == 'm':
+    TransSide += 0.5
+  elif key == 'k':
+    TransSide -= 0.5
+  elif key == 'o':
+    TransVert += 0.5
+  elif key == 'l':
+    TransVert -= 0.5
   else:
     return
   glutPostRedisplay()
@@ -166,6 +176,8 @@ EdgeFLAG = True
 theMouseSide = 389
 theMouseVertical = 0
 theRatio = 1.0
+TransSide = 1.0
+TransVert = 1.0
 
 glutInit(sys.argv)
 glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH)
