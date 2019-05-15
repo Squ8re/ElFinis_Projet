@@ -36,11 +36,11 @@ def draw():
   gluLookAt(0.0,1.0,0.0,0.0,20.0,0.0,0.0,0.0,1.0);  
   glTranslatef(0.0,14.0,0.0);
   glRotatef(0.3*theMouseSide,0.0,0.0,1.0);
-  glRotatef(0.3*theMouseVertical, 1.0, 1.0, 0.0);
+  glRotatef(0.3*theMouseVertical, 1.0, 0.0, 0.0);
   
   quadratic = gluNewQuadric();         
   gluQuadricNormals(quadratic, GLU_SMOOTH); 
-  glColor3f(1.0,1.0,1.0);
+  glColor3f(0.2,1.0,0.3);
   gluSphere(quadratic,5.95,400,200);
  
   n = 9*nElem
