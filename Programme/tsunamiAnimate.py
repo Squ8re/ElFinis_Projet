@@ -23,7 +23,7 @@ import sys
 print('coucou depuis tsunamiAnimate.py')
 
 def draw():  
-  global E,theFlagBathymetry,theMouseSide,theMouseVertical,theRatio
+  global E,theFlagBathymetry,theMouseSide,theMouseVertical,theRatio, EdgeFLAG
 
   glClearColor( 0.9, 0.9, 0.8, 0.0 );
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -81,8 +81,9 @@ def draw():
   glColor3f(0.0, 0.0, 0.0);
   glEnableClientState(GL_VERTEX_ARRAY);    
   glVertexPointer(3,GL_FLOAT,0,coord);
-  for i in range(nElem):
-    glDrawArrays(GL_LINE_LOOP,3*i,3)
+  if(EdgeFLAG):
+    for i in range(nElem):
+      glDrawArrays(GL_LINE_LOOP,3*i,3)
   glDisableClientState(GL_VERTEX_ARRAY) 
   glutSwapBuffers() 
  
@@ -98,7 +99,7 @@ def reshape(width, height):
 # -------------------------------------------------------------------------
  
 def keyboard(key,x,y):
-  global theFlagBathymetry, iter, PauseFlag
+  global theFlagBathymetry, iter, PauseFlag, EdgeFLAG
   
   key = key.decode()
   if ord(key) == 27: # Escape
@@ -111,6 +112,8 @@ def keyboard(key,x,y):
     iter = 0
   elif key == 'p':
     PauseFlag = not PauseFlag
+  elif key == 's':
+    EdgeFLAG = not EdgeFLAG
   else:
     return
   glutPostRedisplay()
@@ -159,6 +162,7 @@ theMeshFile = "PacificTriangleTiny.txt"
 theResultFiles = "nosResult/eta-%06d.txt"
 theFlagBathymetry = False
 PauseFlag = False
+EdgeFLAG = True
 theMouseSide = 389
 theMouseVertical = 0
 theRatio = 1.0
@@ -203,15 +207,16 @@ if "-info" in sys.argv:
   print("GL_VERSION    = ",glGetString(GL_VERSION).decode())
   print("GL_VENDOR     = ",glGetString(GL_VENDOR).decode())
 
-print('======================================')  
+print('===========================================')  
 print(' b           : show bathymetry ')
 print(' e           : show elevation (by default) ')
 print(' UP/DOWN     \_ rotate the Earth ')
 print(' RIGHT/LEFT  / ')
-print(' r           : restart')
-print(' p           : pause')
+print(' r           : restart ')
+print(' p           : pause ')
+print(' s           : show/hide edges')
 print(' ESC         : exit ')
-print('======================================')
+print('===========================================')
  
 [nNode,X,Y,H,nElem,elem] = tsunami.readMesh(theMeshFile)
 print(nElem);                                                                   #TODO: Delete this.
