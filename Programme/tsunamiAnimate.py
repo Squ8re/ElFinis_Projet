@@ -36,6 +36,7 @@ def draw():
   gluLookAt(0.0,1.0,0.0,0.0,20.0,0.0,0.0,0.0,1.0);  
   glTranslatef(0.0,14.0,0.0);
   glRotatef(0.3*theMouseSide,0.0,0.0,1.0);
+  glRotatef(0.3*theMouseVertical, 1.0, 1.0, 0.0);
   
   quadratic = gluNewQuadric();         
   gluQuadricNormals(quadratic, GLU_SMOOTH); 
@@ -97,7 +98,7 @@ def reshape(width, height):
 # -------------------------------------------------------------------------
  
 def keyboard(key,x,y):
-  global theFlagBathymetry
+  global theFlagBathymetry, iter, PauseFlag
   
   key = key.decode()
   if ord(key) == 27: # Escape
@@ -105,7 +106,11 @@ def keyboard(key,x,y):
   elif key == 'b':
     theFlagBathymetry = True
   elif key == 'e':
-    theFlagBathymetry = False  
+    theFlagBathymetry = False
+  elif key == 'r':
+    iter = 0
+  elif key == 'p':
+    PauseFlag = not PauseFlag
   else:
     return
   glutPostRedisplay()
@@ -130,14 +135,19 @@ def special(symbol,x,y):
 # -------------------------------------------------------------------------
 
 def idle():
-  global iter,delta,E,theResultFiles
+  global iter,delta,E,theResultFiles,PauseFlag
   
-  iter += delta 
-  try :
-    E = tsunami.readResult(theResultFiles ,iter,nElem)
-    glutPostRedisplay()
-  except FileNotFoundError: 
-    pass
+  if(not PauseFlag):
+    iter += delta 
+    try :
+      E = tsunami.readResult(theResultFiles ,iter,nElem)
+      glutPostRedisplay()
+    except FileNotFoundError: 
+      pass
+  elif(PauseFlag):
+      pass
+  else:
+      pass
 
 # -------------------------------------------------------------------------
   
@@ -148,6 +158,7 @@ theMeshFile = "PacificTriangleTiny.txt"
 #theResultFiles = "results/eta-%06d.txt" #===========================
 theResultFiles = "nosResult/eta-%06d.txt"
 theFlagBathymetry = False
+PauseFlag = False
 theMouseSide = 389
 theMouseVertical = 0
 theRatio = 1.0
@@ -193,10 +204,13 @@ if "-info" in sys.argv:
   print("GL_VENDOR     = ",glGetString(GL_VENDOR).decode())
 
 print('======================================')  
-print(' b       : show bathymetry ')
-print(' e       : show elevation (by default) ')
-print(' UP/DOWN : rotate the Earth ')
-print(' ESC     : exit ')
+print(' b           : show bathymetry ')
+print(' e           : show elevation (by default) ')
+print(' UP/DOWN     \_ rotate the Earth ')
+print(' RIGHT/LEFT  / ')
+print(' r           : restart')
+print(' p           : pause')
+print(' ESC         : exit ')
 print('======================================')
  
 [nNode,X,Y,H,nElem,elem] = tsunami.readMesh(theMeshFile)
