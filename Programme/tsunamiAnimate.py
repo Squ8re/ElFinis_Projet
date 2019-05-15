@@ -23,7 +23,7 @@ import sys
 print('coucou depuis tsunamiAnimate.py')
 
 def draw():  
-  global E,theFlagBathymetry,theMouse,theRatio
+  global E,theFlagBathymetry,theMouseSide,theMouseVertical,theRatio
 
   glClearColor( 0.9, 0.9, 0.8, 0.0 );
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -35,7 +35,7 @@ def draw():
   glLoadIdentity();
   gluLookAt(0.0,1.0,0.0,0.0,20.0,0.0,0.0,0.0,1.0);  
   glTranslatef(0.0,14.0,0.0);
-  glRotatef(0.3*theMouse,0.0,0.0,1.0);
+  glRotatef(0.3*theMouseSide,0.0,0.0,1.0);
   
   quadratic = gluNewQuadric();         
   gluQuadricNormals(quadratic, GLU_SMOOTH); 
@@ -113,12 +113,16 @@ def keyboard(key,x,y):
 # -------------------------------------------------------------------------
 
 def special(symbol,x,y):
-  global theMouse
+  global theMouseSide, theMouseVertical
   
   if symbol == GLUT_KEY_UP :        
-    theMouse -= 5
+    theMouseVertical -= 5
   elif symbol == GLUT_KEY_DOWN :
-    theMouse += 5
+    theMouseVertical += 5
+  elif symbol == GLUT_KEY_LEFT :
+    theMouseSide -= 5
+  elif symbol == GLUT_KEY_RIGHT :
+    theMouseSide += 5
   else:
     return
   glutPostRedisplay()
@@ -144,7 +148,8 @@ theMeshFile = "PacificTriangleTiny.txt"
 #theResultFiles = "results/eta-%06d.txt" #===========================
 theResultFiles = "nosResult/eta-%06d.txt"
 theFlagBathymetry = False
-theMouse = 389
+theMouseSide = 389
+theMouseVertical = 0
 theRatio = 1.0
 
 glutInit(sys.argv)
